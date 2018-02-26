@@ -23,6 +23,8 @@ if (DOCKER_DB) {
   MONGO_DB = 'mongodb://localhost/avatax';
 }
 
+console.log(MONGO_DB);
+
 mongoose.connect(MONGO_DB);
 
 var db = mongoose.connection;
