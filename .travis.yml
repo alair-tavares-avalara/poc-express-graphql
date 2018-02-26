@@ -19,9 +19,7 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
   
 before_script:
-  - mkdir backup
-  - chmod +x ./backup
-  - tar -cvzf ./database/avatax.tar.gz ./backup
+  - tar -xvzf ./database/avatax.tar.gz
   - ls ./backup
   - npm install -g newman
   - docker-compose up -d
@@ -29,8 +27,8 @@ before_script:
 
 script:
   - docker ps
-  # - docker exec -it pocexpressgraphql_db_1 mongorestore -db avatax /data/db/backup
-  - docker exec -it pocexpressgraphql_db_1 ls -ltr /data/db
+  - docker exec -it pocexpressgraphql_db_1 mongorestore -db avatax /data/db/backup
+  # - docker exec -it pocexpressgraphql_db_1 ls -ltr /data/db
   - newman run tests/agasts.check.response.json -e test.postman_environment.json
 
 after_success:
