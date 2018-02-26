@@ -3,7 +3,7 @@ db:
   ports:
     - "27017:27017"
   volumes:
-    - ./backup:/data/db
+    - .:/data/db
   command: "--smallfiles --logpath=/dev/null"
 api:
   build: .
