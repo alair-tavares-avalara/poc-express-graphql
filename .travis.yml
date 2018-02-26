@@ -20,15 +20,12 @@ before_install:
   
 before_script:
   - tar -xvzf ./database/avatax.tar.gz
-  - ls ./backup
   - npm install -g newman
   - docker-compose up -d
   - sleep 15
 
 script:
-  - docker ps
   - docker exec -it pocexpressgraphql_db_1 mongorestore -d avatax /data/db/backup
-  # - docker exec -it pocexpressgraphql_db_1 ls -ltr /data/db
   - newman run tests/agasts.check.response.json -e test.postman_environment.json
 
 after_success:
