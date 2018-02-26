@@ -19,7 +19,8 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
   
 script:
-  - tar -cvzf database/avatax.tar.gz /data
+  - ls
+  - tar -cvzf ./database/avatax.tar.gz /data
   - npm install -g newman
   - docker --version
   - docker-compose up
