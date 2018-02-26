@@ -24,11 +24,13 @@ before_script:
   - tar -cvzf ./database/avatax.tar.gz ./backup
   - npm install -g newman
   - docker-compose up -d
+  - sleep 15
 
 script:
   - docker ps
-  - nc -v localhost 5000
-  - curl http://localhost:5000
+  - nc -v 0.0.0.0 5000
+  - netstat -tulpn | grep :5000
+  - curl http://0.0.0.0:5000
   - newman run tests/agasts.check.response.json -e test.postman_environment.json
 
 after_success:
