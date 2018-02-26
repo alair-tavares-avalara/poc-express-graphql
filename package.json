@@ -70,5 +70,18 @@
   },
   "jest": {
     "testEnvironment": "node"
+  },
+  "nyc": {
+    "include": [
+      "src/*.js",
+      "src/**/*.js",
+      "src/**/**/*.js"
+    ],
+    "reporter": [
+      "lcov",
+      "html",
+      "text"
+    ],
+    "all": true
   }
 }
