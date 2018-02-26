@@ -1,0 +1,80 @@
+{
+	"info": {
+		"name": "Salminus - Scenarios",
+		"_postman_id": "aa3dbdc1-18de-b4ac-8df4-ed8de1989ad8",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GraphQL Agasts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Content-Type is present\"] = postman.getResponseHeader(\"Content-Type\");",
+							"tests[\"Response time is less than 200ms\"] = responseTime < 200;",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Should fetch agasts\"] = jsonData.data.agasts.length > 0;",
+							"",
+							"var agast = jsonData.data.agasts[0];",
+							"",
+							"var schema = {",
+							"    \"items\": {",
+							"        \"type\": \"string\"",
+							"    }",
+							"};",
+							"",
+							"var data1 = [agast.code, agast.description];",
+							"",
+							"tests[\"Valid Data Type\"] = tv4.validate(data1, schema);",
+							"console.log(\"Validation failed: \", tv4.error);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "content-type",
+						"value": "application/json"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{SALMINUS_API}}/graphql?operationName=getData&query=query%20getData(%24skip%3A%20Int%2C%20%24limit%3A%20Int%2C%20%24code%3A%20String)%20%7B%0A%20%20agasts(code%3A%20%24code%2C%20skip%3A%20%24skip%2C%20limit%3A%20%24limit)%20%7B%0A%20%20%20%20code%0A%20%20%20%20description%0A%20%20%7D%0A%20%20%0A%7D%0A&variables=%7B%0A%20%20\"skip\"%3A%202%2C%0A%20%20\"limit\"%3A%201%0A%7D",
+					"host": [
+						"{{SALMINUS_API}}"
+					],
+					"path": [
+						"graphql"
+					],
+					"query": [
+						{
+							"key": "operationName",
+							"value": "getData",
+							"equals": true
+						},
+						{
+							"key": "query",
+							"value": "query%20getData(%24skip%3A%20Int%2C%20%24limit%3A%20Int%2C%20%24code%3A%20String)%20%7B%0A%20%20agasts(code%3A%20%24code%2C%20skip%3A%20%24skip%2C%20limit%3A%20%24limit)%20%7B%0A%20%20%20%20code%0A%20%20%20%20description%0A%20%20%7D%0A%20%20%0A%7D%0A",
+							"equals": true
+						},
+						{
+							"key": "variables",
+							"value": "%7B%0A%20%20\"skip\"%3A%202%2C%0A%20%20\"limit\"%3A%201%0A%7D",
+							"equals": true
+						}
+					]
+				},
+				"description": "Testing GraphQL Agasts query"
+			},
+			"response": []
+		}
+	]
+}
