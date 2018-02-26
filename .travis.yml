@@ -26,6 +26,8 @@ before_script:
   - docker-compose up -d
 
 script:
+  - docker ps
+  - nc -v localhost 5000
   - newman run tests/agasts.check.response.json -e test.postman_environment.json
 
 after_success:
