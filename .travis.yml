@@ -18,15 +18,18 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
   
-script:
-  - ls
-  - tar -cvzf ./database/avatax.tar.gz /data
+before_script:
+  - mkdir backup
+  - chmod +x ./backup
+  - tar -cvzf ./database/avatax.tar.gz /backup
   - npm install -g newman
-  - docker --version
-  - docker-compose up
+  - docker-compose up --build -d
+
+script:
+  - newman run tests/agasts.check.response.json -e tests.postman_environment.json
 
 after_success:
-  - newman run tests/agasts.check.response.json -e tests.postman_environment.json
+  - docker-compose down
 
 notifications:
   email:
