@@ -14,7 +14,16 @@ const port = process.env.PORT || 5000;
 const app = express();
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017');
+
+var MONGO_DB;
+var DOCKER_DB = process.env.DB_PORT;
+if (DOCKER_DB) {
+  MONGO_DB = DOCKER_DB.replace('tcp', 'mongodb') + '/avatax';
+} else {
+  MONGO_DB = 'mongodb://localhost/avatax';
+}
+
+mongoose.connect(MONGO_DB);
 
 var db = mongoose.connection;
 db.on('error', () => { console.log('---FAILED to connect to mongoose') })
