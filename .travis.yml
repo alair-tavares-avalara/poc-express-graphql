@@ -28,7 +28,7 @@ before_script:
 
 script:
   - docker ps
-  - docker exec -d pocexpressgraphql_db_1 mongorestore --help
+  #- docker exec -d pocexpressgraphql_db_1 mongorestore --help
   - newman run tests/agasts.check.response.json -e test.postman_environment.json
 
 after_success:
