@@ -22,13 +22,15 @@ before_script:
   - mkdir backup
   - chmod +x ./backup
   - tar -cvzf ./database/avatax.tar.gz ./backup
+  - ls ./backup
   - npm install -g newman
   - docker-compose up -d
   - sleep 15
 
 script:
   - docker ps
-  - docker exec -d pocexpressgraphql_db_1 mongorestore -db avatax /data/db/backup
+  # - docker exec -it pocexpressgraphql_db_1 mongorestore -db avatax /data/db/backup
+  - docker exec -it pocexpressgraphql_db_1 ls -ltr /data/db
   - newman run tests/agasts.check.response.json -e test.postman_environment.json
 
 after_success:
