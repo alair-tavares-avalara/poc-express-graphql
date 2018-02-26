@@ -21,7 +21,7 @@ before_install:
 before_script:
   - mkdir backup
   - chmod +x ./backup
-  - tar -cvzf ./database/avatax.tar.gz /backup
+  - tar -cvzf ./database/avatax.tar.gz ./backup
   - npm install -g newman
   - docker-compose up --build -d
 
