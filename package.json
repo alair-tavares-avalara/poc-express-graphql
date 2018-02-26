@@ -5,7 +5,7 @@
   "scripts": {
     "prestart": "npm run -s build",
     "start": "node dist/index.js",
-    "coverage": "nyc npm start",
+    "coverage": "nyc --require babel-register node dist/index",
     "coverage-report": "nyc report --reporter=text-lcov > coverage.lcov",
     "dev": "nodemon src/index.js --exec \"node -r dotenv/config -r babel-register\"",
     "clean": "rimraf dist",
@@ -73,9 +73,7 @@
   },
   "nyc": {
     "include": [
-      "src/*.js",
-      "src/**/*.js",
-      "src/**/**/*.js"
+      "src/**"
     ],
     "reporter": [
       "lcov",
