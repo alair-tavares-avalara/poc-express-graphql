@@ -7,7 +7,7 @@ db:
   command: "--smallfiles --logpath=/dev/null"
 api:
   build: .
-  command: npm start
+  command: npm run coverage
   volumes:
     - .:/data
   ports:
