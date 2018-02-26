@@ -27,7 +27,7 @@ before_script:
 
 script:
   - docker ps
-  - docker exec -it pocexpressgraphql_db_1 mongorestore -db avatax /data/db/backup
+  - docker exec -it pocexpressgraphql_db_1 mongorestore -d avatax /data/db/backup
   # - docker exec -it pocexpressgraphql_db_1 ls -ltr /data/db
   - newman run tests/agasts.check.response.json -e test.postman_environment.json
 
