@@ -23,7 +23,7 @@ before_script:
   - chmod +x ./backup
   - tar -cvzf ./database/avatax.tar.gz ./backup
   - npm install -g newman
-  - docker-compose up --build -d
+  - docker-compose up -d
 
 script:
   - newman run tests/agasts.check.response.json -e tests.postman_environment.json
