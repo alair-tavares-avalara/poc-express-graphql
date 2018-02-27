@@ -1,0 +1,131 @@
+{
+	"info": {
+		"name": "Salminus - Scenarios",
+		"_postman_id": "aa3dbdc1-18de-b4ac-8df4-ed8de1989ad8",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GraphQL Agasts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Content-Type is present\"] = postman.getResponseHeader(\"Content-Type\");",
+							"tests[\"Response time is less than 200ms\"] = responseTime < 200;",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Should fetch agasts\"] = jsonData.data.agasts.length > 0;",
+							"",
+							"var agast = jsonData.data.agasts[0];",
+							"",
+							"var schema = {",
+							"    \"items\": {",
+							"        \"type\": \"string\"",
+							"    }",
+							"};",
+							"",
+							"var data1 = [agast.code, agast.description];",
+							"",
+							"tests[\"Valid Data Type\"] = tv4.validate(data1, schema);",
+							"console.log(\"Validation failed: \", tv4.error);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"query\": \"query getData($skip: Int, $limit: Int, $code: String) {\\n  agasts(code: $code, skip: $skip, limit: $limit) {\\n    code\\n    description\\n  }\\n  \\n}\\n\",\r\n  \"variables\": {\r\n    \"skip\": 2,\r\n    \"limit\": 10\r\n  },\r\n  \"operationName\": \"getData\"\r\n}"
+				},
+				"url": {
+					"raw": "{{SALMINUS_API}}/graphql",
+					"host": [
+						"{{SALMINUS_API}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": "Testing GraphQL Agasts query"
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Company",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e34adb06-dfe8-4053-83e6-8bf369e58921",
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Content-Type is present\"] = postman.getResponseHeader(\"Content-Type\");",
+							"tests[\"Response time is less than 200ms\"] = responseTime < 200;",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Should fetch companies\"] = jsonData.data.companies.length > 0;",
+							"",
+							"var company = jsonData.data.companies[0];",
+							"",
+							"var schema = {",
+							"    \"items\": {",
+							"        \"type\": \"string\"",
+							"    }",
+							"};",
+							"",
+							"var data1 = [company.code, company.officialName];",
+							"",
+							"tests[\"Valid Data Type\"] = tv4.validate(data1, schema);",
+							"console.log(\"Validation failed: \", tv4.error);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"query\":\"query getData($officialName: String, $code: String, $skip: Int, $limit: Int) {\\n  companies(officialName: $officialName, code: $code, skip: $skip, limit: $limit) {\\n    code\\n    name\\n    officialName\\n  }\\n}\\n\",\n\t\"variables\": {\n\t\t\"officialName\":\"MERI\",\"skip\":1,\"limit\":10\n\t\t\n\t},\n\t\"operationName\":\"getData\"\n\t\n}"
+				},
+				"url": {
+					"raw": "{{SALMINUS_API}}/graphql",
+					"host": [
+						"{{SALMINUS_API}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

@@ -6,11 +6,15 @@ const companyType = modelToType(CompanyModel);
 
 const typeDefs = `
     ${companyType}
-`;
 
+    input RegExp {
+        pattern: String
+    }
+`;
+ 
 const queries = `
     company(id: String!): Company
-    companies(skip: Int, limit: Int): [Company]
+    companies(code: String, officialName: String, skip: Int, limit: Int): [Company]
 `;
 
 const resolvers = {

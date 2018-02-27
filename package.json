@@ -5,12 +5,14 @@
   "scripts": {
     "prestart": "npm run -s build",
     "start": "node dist/index.js",
-    "coverage": "nyc --require babel-register npm start",
+    "coverage": "NODE_ENV=test nyc --require babel-register npm start",
     "coverage-report": "nyc report --reporter=text-lcov > coverage.lcov",
     "dev": "nodemon src/index.js --exec \"node -r dotenv/config -r babel-register\"",
     "clean": "rimraf dist",
     "build": "npm run clean && mkdir dist && babel src -s -D -d dist",
     "test": "jest --watch",
+    "test-api": "newman run ./tests/api/* -e test.postman_environment.json",
+    "test-api:dev": "newman run ./tests/api/Salminus_-_Scenarios.postman_collection.json -e localhost.postman_environment.json",
     "lint": "esw -w src test"
   },
   "dependencies": {

@@ -25,6 +25,12 @@ function getFiltersFromArgs(args) {
 
     delete args.skip;
     delete args.limit;
+    
+    Object.keys(args).forEach(key => {
+        if (typeof args[key] === 'string') {
+            args[key] = new RegExp(args[key], 'i');
+        }
+    });
 
     return args;
 };
