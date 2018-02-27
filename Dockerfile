@@ -6,8 +6,7 @@ WORKDIR /usr/src/app
 # Install app dependencies
 COPY package.json package-lock.json ./
 
-RUN npm install -g newman nyc && \
-    npm install
+RUN npm install
 
 # Bundle app source
 COPY . .
