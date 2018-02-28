@@ -562,6 +562,116 @@
 				"description": null
 			},
 			"response": []
+		},
+		{
+			"name": "GraphQL Company - createOne",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "44b3ed22-b9cf-45e6-bd02-26a8acff5ebf",
+						"type": "text/javascript",
+						"exec": [
+							"var schema = {",
+							"    'items': {",
+							"        'type': 'string'",
+							"    }",
+							"};",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"var newCompany = jsonData.data.companyCreate;",
+							"var data1 = [newCompany.record.code, newCompany.record.officialName];",
+							"",
+							"tests['Content-Type is present'] = postman.getResponseHeader('Content-Type');",
+							"tests['Response time is less than 200ms'] = responseTime < 200;",
+							"tests['Status code is 200\"'] = responseCode.code === 200;",
+							"tests['Should create a Company'] = newCompany !== null;",
+							"tests['Should return recordId'] = newCompany.recordId !== null;",
+							"tests['Should fetch recent created Company'] = newCompany.record.code === 'bc00533d-8d1f-29de-803c-0a17c5189cab' && newCompany.record.officialName === 'Let\\'s Make America Great Again';",
+							"tests['Valid Data Type'] = tv4.validate(data1, schema);",
+							"",
+							"console.log('Validation failed: ', tv4.error);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"query\": \"mutation {\\n  companyCreate(record: {\\n  \\tcode: \\\"bc00533d-8d1f-29de-803c-0a17c5189cab\\\",\\n    officialName: \\\"Let's Make America Great Again\\\",\\n  \\tname: \\\"Donald Trump\\\",\\n  \\tentityType: business,\\n  \\tsubjectToSRF1234: true,\\n  \\tfederalTaxRegime: realProfit,\\n  \\treceiptsAreFullNoCumulativePisCofins: false,\\n  \\tinssWithholdSubjectTo: false,\\n  \\tissWithholdSubjectTo: false,\\n  \\tirrfWithholdSubjectTo: true\\n\\t}) {\\n    recordId,\\n    record {\\n      code,\\n      officialName\\n    }\\n  }\\n}\",\r\n  \"variables\": null\r\n}"
+				},
+				"url": {
+					"raw": "{{SALMINUS_API}}/graphql",
+					"host": [
+						"{{SALMINUS_API}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Company - removeById",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5384d282-6d9c-4e25-96a8-b1de5a242f7a",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var removedCompany = jsonData.data.companyRemoveById;",
+							"",
+							"tests['Content-Type is present'] = postman.getResponseHeader('Content-Type');",
+							"tests['Response time is less than 200ms'] = responseTime < 200;",
+							"tests['Status code is 200\"'] = responseCode.code === 200;",
+							"tests['Should remove company by id'] = removedCompany.recordId !== null;"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"query\": \"mutation {\\n  companyRemoveById(_id: \\\"5a44dfbc169ce40d06d99a18\\\") {\\n    recordId\\n  }\\n}\\n      \",\r\n  \"variables\": null\r\n}"
+				},
+				"url": {
+					"raw": "{{SALMINUS_API}}/graphql",
+					"host": [
+						"{{SALMINUS_API}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
