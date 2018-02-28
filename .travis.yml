@@ -19,6 +19,8 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 stages:
+  - Run unit tests
+  - Run integrated tests
   - name: Release
     # require the branch name to be master
     if: branch = master
