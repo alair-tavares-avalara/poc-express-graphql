@@ -7,67 +7,6 @@
 	},
 	"item": [
 		{
-			"name": "GraphQL Company",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "e34adb06-dfe8-4053-83e6-8bf369e58921",
-						"type": "text/javascript",
-						"exec": [
-							"tests[\"Content-Type is present\"] = postman.getResponseHeader(\"Content-Type\");",
-							"tests[\"Response time is less than 200ms\"] = responseTime < 200;",
-							"tests[\"Status code is 200\"] = responseCode.code === 200;",
-							"",
-							"var jsonData = JSON.parse(responseBody);",
-							"tests[\"Should fetch companies\"] = jsonData.data.companies.length > 0;",
-							"",
-							"var company = jsonData.data.companies[0];",
-							"",
-							"var schema = {",
-							"    \"items\": {",
-							"        \"type\": \"string\"",
-							"    }",
-							"};",
-							"",
-							"var data1 = [company.code, company.officialName];",
-							"",
-							"tests[\"Valid Data Type\"] = tv4.validate(data1, schema);",
-							"console.log(\"Validation failed: \", tv4.error);"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"query\":\"query getData($officialName: String, $code: String, $skip: Int, $limit: Int) {\\n  companies(officialName: $officialName, code: $code, skip: $skip, limit: $limit) {\\n    code\\n    name\\n    officialName\\n  }\\n}\\n\",\n\t\"variables\": {\n\t\t\"officialName\":\"MERI\",\"skip\":1,\"limit\":10\n\t\t\n\t},\n\t\"operationName\":\"getData\"\n\t\n}"
-				},
-				"url": {
-					"raw": "{{SALMINUS_API}}/graphql",
-					"host": [
-						"{{SALMINUS_API}}"
-					],
-					"path": [
-						"graphql"
-					]
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
 			"name": "GraphQL Company - findMany without filter",
 			"event": [
 				{
