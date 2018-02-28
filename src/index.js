@@ -1,5 +1,6 @@
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
+import expressPlayground from 'graphql-playground-middleware-express';
 import cors from 'cors';
 import path from 'path';
 import logger from 'morgan';
@@ -46,6 +47,8 @@ app.use('/graphql', graphqlHTTP(req => ({
   schema: Schema,
   graphiql: true
 })));
+
+app.get('/graphql-playground', expressPlayground({ endpoint: '/graphql' }));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
