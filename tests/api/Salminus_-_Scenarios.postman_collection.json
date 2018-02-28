@@ -672,6 +672,105 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "GraphQL Company - removeById invalid Id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4863deb2-7f91-48e3-8125-cd63bc3a42e6",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var errors = jsonData.errors;",
+							"",
+							"tests['Content-Type is present'] = postman.getResponseHeader('Content-Type');",
+							"tests['Response time is less than 200ms'] = responseTime < 200;",
+							"tests['Status code is 200'] = responseCode.code === 200;",
+							"tests['Should trigger error when id is invalid'] = errors.length > 0;",
+							"tests['Should trigger cast error'] = 'Cast to ObjectId failed for value \"invalid_id\" at path \"_id\" for model \"Company\"';"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"query\": \"mutation {\\n  companyRemoveById(_id: \\\"invalid_id\\\") {\\n    recordId\\n  }\\n}\\n      \",\r\n  \"variables\": null\r\n}"
+				},
+				"url": {
+					"raw": "{{SALMINUS_API}}/graphql",
+					"host": [
+						"{{SALMINUS_API}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Company - removeById nonexistent Id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "77181499-5088-4a9f-a596-c1916a8f3174",
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var companyRemoveById = jsonData.data.companyRemoveById;",
+							"",
+							"tests['Content-Type is present'] = postman.getResponseHeader('Content-Type');",
+							"tests['Response time is less than 200ms'] = responseTime < 200;",
+							"tests['Status code is 200'] = responseCode.code === 200;",
+							"tests['Should return null on nonexistent id'] = companyRemoveById === null;"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"query\": \"mutation {\\n  companyRemoveById(_id: \\\"5a96fcc7d900815204d921a1\\\") {\\n    recordId\\n  }\\n}\\n      \",\r\n  \"variables\": null\r\n}"
+				},
+				"url": {
+					"raw": "{{SALMINUS_API}}/graphql",
+					"host": [
+						"{{SALMINUS_API}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
