@@ -21,9 +21,15 @@ before_install:
 stages:
   - Run unit tests
   - Run integrated tests
-  - name: Release
+  - name: Release to DEV
     # require the branch name to be master
     if: branch = master
+  - name: Release to HOMOLOG
+    # require the branch name to be pre-production
+    if: branch = pre-production
+  - name: Release to PRD
+    # require the branch name to be production
+    if: branch = production
 
 jobs:
   include:
@@ -42,9 +48,17 @@ jobs:
         - docker exec -it pocexpressgraphql_db_1 mongorestore -d avatax /data/db/backup
         - npm run test-api
     
-    - stage: Release
+    - stage: Release to DEV
       script:
-        - echo "Release"
+        - echo "Release to DEV"
+
+    - stage: Release to HOMOLOG
+      script:
+        - echo "Release to HOMOLOG"
+
+    - stage: Release to PRD
+      script:
+        - echo "Release to PRD"
 
 notifications:
   email:
