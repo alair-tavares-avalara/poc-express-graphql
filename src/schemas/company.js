@@ -1,30 +1,28 @@
-import CompanyModel from '../models/CompanyModel';
-import { modelToType } from 'mongoose-graphql';
-import { getProjection, find, findById } from '../utils';
+'use strict';
 
-const companyType = modelToType(CompanyModel);
+import mongoose, { Schema } from 'mongoose';
+import { composeWithMongoose } from 'graphql-compose-mongoose';
+import { schemaComposer } from 'graphql-compose';
+import Company from '../models/company';
 
-const typeDefs = `
-    ${companyType}
+const customizationOptions = {}; // left it empty for simplicity, described below
+const CompanyTC = composeWithMongoose(Company, customizationOptions);
 
-    input RegExp {
-        pattern: String
-    }
-`;
- 
-const queries = `
-    company(id: String!): Company
-    companies(code: String, officialName: String, skip: Int, limit: Int): [Company]
-`;
+export default CompanyTC;
 
-const resolvers = {
-    company: async (root, { id }, source, fieldASTs) => {
-        return await findById(CompanyModel, id, fieldASTs);
-    },
-
-    companies: async (root, args, source, fieldASTs) => {
-        return await find(CompanyModel, args, fieldASTs);
-    },
+export const rootQueryFields = {
+    companyById: CompanyTC.getResolver('findById'),
+    companyMany: CompanyTC.getResolver('findMany'),
+    companyCount: CompanyTC.getResolver('count'),
+    companyPagination: CompanyTC.getResolver('pagination'),
 };
 
-export default { typeDefs, resolvers, queries };
+export const rootMutationFields = {
+    companyCreate: CompanyTC.getResolver('createOne'),
+    companyUpdateById: CompanyTC.getResolver('updateById'),
+    companyUpdateOne: CompanyTC.getResolver('updateOne'),
+    companyUpdateMany: CompanyTC.getResolver('updateMany'),
+    companyRemoveById: CompanyTC.getResolver('removeById'),
+    companyRemoveOne: CompanyTC.getResolver('removeOne'),
+    companyRemoveMany: CompanyTC.getResolver('removeMany'),
+};

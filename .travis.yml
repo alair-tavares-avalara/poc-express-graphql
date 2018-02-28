@@ -18,14 +18,31 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
 
-before_script:
-  - tar -xvzf ./database/avatax.tar.gz
-  - npm install -g newman nyc
-  - docker-compose up -d
+stages:
+  - name: Release
+    # require the branch name to be master
+    if: branch = master
 
-script:
-  - docker exec -it pocexpressgraphql_db_1 mongorestore -d avatax /data/db/backup
-  - npm run test-api
+jobs:
+  include:
+    - stage: Run unit tests
+      script:
+        - npm install
+        - npm build
+        - echo "Run unit tests"
+
+    - stage: Run integrated tests
+      before_script:
+        - tar -xvzf ./database/avatax.tar.gz
+        - npm install -g newman nyc
+      script:
+        - docker-compose up -d
+        - docker exec -it pocexpressgraphql_db_1 mongorestore -d avatax /data/db/backup
+        - npm run test-api
+    
+    - stage: Release
+      script:
+        - echo "Release"
 
 notifications:
   email:
