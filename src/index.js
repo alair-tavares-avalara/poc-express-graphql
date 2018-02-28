@@ -6,7 +6,6 @@ import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-import Agast from './models/AgastModel';
 import index from './routes/index';
 import Schema from './schemas';
 

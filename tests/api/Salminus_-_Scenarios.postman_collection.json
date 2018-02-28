@@ -7,66 +7,6 @@
 	},
 	"item": [
 		{
-			"name": "GraphQL Agasts",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"tests[\"Content-Type is present\"] = postman.getResponseHeader(\"Content-Type\");",
-							"tests[\"Response time is less than 200ms\"] = responseTime < 200;",
-							"tests[\"Status code is 200\"] = responseCode.code === 200;",
-							"",
-							"var jsonData = JSON.parse(responseBody);",
-							"tests[\"Should fetch agasts\"] = jsonData.data.agasts.length > 0;",
-							"",
-							"var agast = jsonData.data.agasts[0];",
-							"",
-							"var schema = {",
-							"    \"items\": {",
-							"        \"type\": \"string\"",
-							"    }",
-							"};",
-							"",
-							"var data1 = [agast.code, agast.description];",
-							"",
-							"tests[\"Valid Data Type\"] = tv4.validate(data1, schema);",
-							"console.log(\"Validation failed: \", tv4.error);"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"query\": \"query getData($skip: Int, $limit: Int, $code: String) {\\n  agasts(code: $code, skip: $skip, limit: $limit) {\\n    code\\n    description\\n  }\\n  \\n}\\n\",\r\n  \"variables\": {\r\n    \"skip\": 2,\r\n    \"limit\": 10\r\n  },\r\n  \"operationName\": \"getData\"\r\n}"
-				},
-				"url": {
-					"raw": "{{SALMINUS_API}}/graphql",
-					"host": [
-						"{{SALMINUS_API}}"
-					],
-					"path": [
-						"graphql"
-					]
-				},
-				"description": "Testing GraphQL Agasts query"
-			},
-			"response": []
-		},
-		{
 			"name": "GraphQL Company",
 			"event": [
 				{
@@ -124,6 +64,563 @@
 					]
 				},
 				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Company - findMany without filter",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var schema = {",
+							"    \"items\": {",
+							"        \"type\": \"string\"",
+							"    }",
+							"};",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"var companyMany = jsonData.data.viewer.companyMany;",
+							"var company = companyMany[0];",
+							"var data1 = [company.code, company.officialName];",
+							"var data2 = [company.inssWithholdSubjectTo];",
+							"",
+							"tests[\"Content-Type is present\"] = postman.getResponseHeader(\"Content-Type\");",
+							"tests[\"Response time is less than 200ms\"] = responseTime < 200;",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Should fetch all Companies\"] = companyMany.length === 41;",
+							"tests[\"Valid Data Type\"] = tv4.validate(data1, schema);",
+							"tests[\"Invalid Data Type\"] = tv4.validate(data2, schema) === false;",
+							"",
+							"console.log(\"Validation failed: \", tv4.error);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"query\": \"{  viewer { companyMany { code, officialName, inssWithholdSubjectTo } } }\",\r\n  \"variables\": null,\r\n  \"operationName\": null\r\n}"
+				},
+				"url": {
+					"raw": "{{SALMINUS_API}}/graphql",
+					"host": [
+						"{{SALMINUS_API}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Company - findMany check result data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var schema = {",
+							"    \"items\": {",
+							"        \"type\": \"string\"",
+							"    }",
+							"};",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"var companyMany = jsonData.data.viewer.companyMany;",
+							"var company = companyMany[0];",
+							"var data1 = [company.code, company.officialName];",
+							"var data2 = [company.inssWithholdSubjectTo];",
+							"var keys = Object.keys(company);",
+							"var expectedKeys = ['code', 'officialName', 'name', 'inssWithholdSubjectTo'];",
+							"",
+							"tests['Should Content-Type is present'] = postman.getResponseHeader('Content-Type');",
+							"tests['Should response time is less than 200ms'] = responseTime < 200;",
+							"tests['Should status code is 200'] = responseCode.code === 200;",
+							"tests['Should valid Data Type'] = tv4.validate(data1, schema);",
+							"tests['Should invalid Data Type'] = tv4.validate(data2, schema) === false;",
+							"tests['Should return the object as configured in the request'] = keys.length === 4;",
+							"tests['Should check keys of response data'] = keys.length === expectedKeys.length && keys.every((v,i)=> v === expectedKeys[i]);",
+							"",
+							"console.log('Validation failed: ', tv4.error);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"query\": \"{  viewer { companyMany(filter: {name: \\\"AVALARA BRASIL\\\"}) { code, officialName, name, inssWithholdSubjectTo } } }\",\r\n  \"variables\": null,\r\n  \"operationName\": null\r\n}"
+				},
+				"url": {
+					"raw": "{{SALMINUS_API}}/graphql",
+					"host": [
+						"{{SALMINUS_API}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Company - count without filter",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var schema = {",
+							"    \"items\": {",
+							"        \"type\": \"number\"",
+							"    }",
+							"};",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"var companyCount = jsonData.data.viewer.companyCount;",
+							"var data1 = [companyCount];",
+							"",
+							"tests['Should Content-Type is present'] = postman.getResponseHeader('Content-Type');",
+							"tests['Should response time is less than 200ms'] = responseTime < 200;",
+							"tests['Should status code is 200'] = responseCode.code === 200;",
+							"tests['Should valid Data Type'] = tv4.validate(data1, schema);",
+							"tests['Should count all companies'] = companyCount === 41;",
+							"",
+							"console.log('Validation failed: ', tv4.error);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\": \"{  viewer { companyCount } }\",\n  \"variables\": null,\n  \"operationName\": null\n}"
+				},
+				"url": {
+					"raw": "{{SALMINUS_API}}/graphql",
+					"host": [
+						"{{SALMINUS_API}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Company - count with filter",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var schema = {",
+							"    \"items\": {",
+							"        \"type\": \"number\"",
+							"    }",
+							"};",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"var companyCount = jsonData.data.viewer.companyCount;",
+							"var data1 = [companyCount];",
+							"",
+							"tests['Should Content-Type is present'] = postman.getResponseHeader('Content-Type');",
+							"tests['Should response time is less than 200ms'] = responseTime < 200;",
+							"tests['Should status code is 200'] = responseCode.code === 200;",
+							"tests['Should valid Data Type'] = tv4.validate(data1, schema);",
+							"tests['Should count all companies'] = companyCount === 1;",
+							"",
+							"console.log('Validation failed: ', tv4.error);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"query\": \"{  viewer { companyCount(filter: { code: \\\"a23fee1c-f0c6-4fd5-b032-75068e38c9f0\\\"}) } }\",\n  \"variables\": null,\n  \"operationName\": null\n}"
+				},
+				"url": {
+					"raw": "{{SALMINUS_API}}/graphql",
+					"host": [
+						"{{SALMINUS_API}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Company - findById",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var schema = {",
+							"    \"items\": {",
+							"        \"type\": \"object\"",
+							"    }",
+							"};",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"var company = jsonData.data.viewer.companyById;",
+							"var data1 = [company];",
+							"var expectedCompany = {",
+							"    \"code\": \"7038fd12-b77b-41b6-83d8-cea8df04f482\",",
+							"    \"officialName\": \"ECOCERTA BIOTECNOLOGIA LTDA \",",
+							"    \"name\": \"GLOBAL - ANALITUS\",",
+							"    \"inssWithholdSubjectTo\": false",
+							"};",
+							"",
+							"tests[\"Should Content-Type is present\"] = postman.getResponseHeader(\"Content-Type\");",
+							"tests[\"Should response time is less than 200ms\"] = responseTime < 200;",
+							"tests[\"should status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Should valid Data Type\"] = tv4.validate(data1, schema);",
+							"tests[\"Should fetch Company by id\"] = JSON.stringify(company) === JSON.stringify(expectedCompany);",
+							"",
+							"console.log(\"Validation failed: \", tv4.error);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"query\": \"{\\n  viewer {\\n    companyById (_id: \\\"5a705de2b9c0152c26ca3c23\\\") {\\n      code,\\n      officialName,\\n      name,\\n      inssWithholdSubjectTo\\n\\t\\t}\\n  }\\n}\\n\",\r\n  \"variables\": null,\r\n  \"operationName\": null\r\n}"
+				},
+				"url": {
+					"raw": "{{SALMINUS_API}}/graphql",
+					"host": [
+						"{{SALMINUS_API}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Company - findById with invalid _id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"var error = jsonData.errors[0];",
+							"var expectedMessage = 'Cast to ObjectId failed for value \\\"invalid_id\\\" at path \\\"_id\\\" for model \\\"Company\\\"';",
+							"",
+							"tests[\"Should Content-Type is present\"] = postman.getResponseHeader(\"Content-Type\");",
+							"tests[\"Should response time is less than 200ms\"] = responseTime < 200;",
+							"tests[\"should status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Should return error when id is invalid\"] = error.message === expectedMessage;",
+							"",
+							"console.log(\"Validation failed: \", tv4.error);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"query\": \"{\\n  viewer {\\n    companyById (_id: \\\"invalid_id\\\") {\\n      code,\\n      officialName,\\n      name,\\n      inssWithholdSubjectTo\\n\\t\\t}\\n  }\\n}\\n\",\r\n  \"variables\": null,\r\n  \"operationName\": null\r\n}"
+				},
+				"url": {
+					"raw": "{{SALMINUS_API}}/graphql",
+					"host": [
+						"{{SALMINUS_API}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Company - pagination - page 4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var schema = {",
+							"    'items': {",
+							"        'type': 'string'",
+							"    }",
+							"};",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"var companyPagination = jsonData.data.viewer.companyPagination;",
+							"var pageInfo = companyPagination.pageInfo;",
+							"var company = companyPagination.items[0];",
+							"var data1 = [company.code, company.officialName];",
+							"",
+							"tests['Content-Type is present'] = postman.getResponseHeader('Content-Type');",
+							"tests['Response time is less than 200ms'] = responseTime < 200;",
+							"tests['Status code is 200\"'] = responseCode.code === 200;",
+							"tests['Should fetch Company by \"Code\"'] = companyPagination.items.length > 0;",
+							"tests['Should limit items according to pagination config'] = companyPagination.items.length === 5;",
+							"tests['Should fetch pageInfo - check perPage'] = pageInfo.perPage === 5;",
+							"tests['Should fetch pageInfo - check pageCount'] = pageInfo.pageCount === 9;",
+							"tests['Should fetch pageInfo - check hasNextPage'] = pageInfo.hasNextPage === true;",
+							"tests['Should fetch pageInfo - check hasPreviousPage'] = pageInfo.hasPreviousPage === true;",
+							"tests['Should fetch correct Company at first item'] = company.code === '81c4da3b-c8ee-4ba6-96c9-9c78ff979965';",
+							"tests['Should count total of items'] = companyPagination.count === 41;",
+							"tests['Valid Data Type'] = tv4.validate(data1, schema);",
+							"",
+							"console.log('Validation failed: ', tv4.error);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"query\": \"{\\n  viewer {\\n    companyPagination (page: 4, perPage: 5) {\\n      pageInfo {\\n        perPage,\\n        pageCount,\\n        itemCount,\\n        hasNextPage,\\n        hasPreviousPage\\n      }\\n      count\\n      items {\\n      \\tcode,\\n        officialName\\n   \\t \\t}\\n    }\\n  }\\n}\\n\",\r\n  \"variables\": null,\r\n  \"operationName\": null\r\n}"
+				},
+				"url": {
+					"raw": "{{SALMINUS_API}}/graphql",
+					"host": [
+						"{{SALMINUS_API}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Company - pagination - first page",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var schema = {",
+							"    'items': {",
+							"        'type': 'string'",
+							"    }",
+							"};",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"var companyPagination = jsonData.data.viewer.companyPagination;",
+							"var pageInfo = companyPagination.pageInfo;",
+							"var company = companyPagination.items[0];",
+							"var data1 = [company.code, company.officialName];",
+							"",
+							"tests['Content-Type is present'] = postman.getResponseHeader('Content-Type');",
+							"tests['Response time is less than 200ms'] = responseTime < 200;",
+							"tests['Status code is 200\"'] = responseCode.code === 200;",
+							"tests['Should fetch Company by \"Code\"'] = companyPagination.items.length > 0;",
+							"tests['Should limit items according to pagination config'] = companyPagination.items.length === 10;",
+							"tests['Should fetch pageInfo - check perPage'] = pageInfo.perPage === 10;",
+							"tests['Should fetch pageInfo - check pageCount'] = pageInfo.pageCount === 5;",
+							"tests['Should fetch pageInfo - check hasNextPage'] = pageInfo.hasNextPage === true;",
+							"tests['Should fetch pageInfo - check hasPreviousPage'] = pageInfo.hasPreviousPage === false;",
+							"tests['Should fetch correct Company at first item'] = company.code === 'a23fee1c-f0c6-4fd5-b032-75068e38c9f0';",
+							"tests['Should count total of items'] = companyPagination.count === 41;",
+							"tests['Valid Data Type'] = tv4.validate(data1, schema);",
+							"",
+							"console.log('Validation failed: ', tv4.error);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"query\": \"{\\n  viewer {\\n    companyPagination (page: 1, perPage: 10) {\\n      pageInfo {\\n        perPage,\\n        pageCount,\\n        itemCount,\\n        hasNextPage,\\n        hasPreviousPage\\n      }\\n      count\\n      items {\\n      \\tcode,\\n        officialName\\n   \\t \\t}\\n    }\\n  }\\n}\\n\",\r\n  \"variables\": null,\r\n  \"operationName\": null\r\n}"
+				},
+				"url": {
+					"raw": "{{SALMINUS_API}}/graphql",
+					"host": [
+						"{{SALMINUS_API}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Company - pagination - last page",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var schema = {",
+							"    'items': {",
+							"        'type': 'string'",
+							"    }",
+							"};",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"var companyPagination = jsonData.data.viewer.companyPagination;",
+							"var pageInfo = companyPagination.pageInfo;",
+							"var company = companyPagination.items[0];",
+							"var data1 = [company.code, company.officialName];",
+							"",
+							"tests['Content-Type is present'] = postman.getResponseHeader('Content-Type');",
+							"tests['Response time is less than 200ms'] = responseTime < 200;",
+							"tests['Status code is 200\"'] = responseCode.code === 200;",
+							"tests['Should fetch Company by \"Code\"'] = companyPagination.items.length > 0;",
+							"tests['Should limit items according to pagination config'] = companyPagination.items.length === 10;",
+							"tests['Should fetch pageInfo - check perPage'] = pageInfo.perPage === 10;",
+							"tests['Should fetch pageInfo - check pageCount'] = pageInfo.pageCount === 5;",
+							"tests['Should fetch pageInfo - check hasNextPage'] = pageInfo.hasNextPage === true;",
+							"tests['Should fetch pageInfo - check hasPreviousPage'] = pageInfo.hasPreviousPage === false;",
+							"tests['Should fetch correct Company at first item'] = company.code === 'a23fee1c-f0c6-4fd5-b032-75068e38c9f0';",
+							"tests['Should count total of items'] = companyPagination.count === 41;",
+							"tests['Valid Data Type'] = tv4.validate(data1, schema);",
+							"",
+							"console.log('Validation failed: ', tv4.error);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"query\": \"{\\n  viewer {\\n    companyPagination (page: 1, perPage: 10) {\\n      pageInfo {\\n        perPage,\\n        pageCount,\\n        itemCount,\\n        hasNextPage,\\n        hasPreviousPage\\n      }\\n      count\\n      items {\\n      \\tcode,\\n        officialName\\n   \\t \\t}\\n    }\\n  }\\n}\\n\",\r\n  \"variables\": null,\r\n  \"operationName\": null\r\n}"
+				},
+				"url": {
+					"raw": "{{SALMINUS_API}}/graphql",
+					"host": [
+						"{{SALMINUS_API}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": null
 			},
 			"response": []
 		}

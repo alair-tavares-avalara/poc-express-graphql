@@ -1,26 +1,28 @@
-import AgastModel from '../models/AgastModel';
-import { modelToType } from 'mongoose-graphql';
-import { getProjection, find, findById } from '../utils';
+'use strict';
 
-const agastType = modelToType(AgastModel);
+import mongoose, { Schema } from 'mongoose';
+import { composeWithMongoose } from 'graphql-compose-mongoose';
+import { schemaComposer } from 'graphql-compose';
+import Agast from '../models/agast';
 
-const typeDefs = `
-    ${agastType}
-`;
+const customizationOptions = {}; // left it empty for simplicity, described below
+const AgastTC = composeWithMongoose(Agast, customizationOptions);
 
-const queries = `
-    agast(id: String!): Agast
-    agasts(code: String, description: String, skip: Int, limit: Int): [Agast]
-`;
+export default AgastTC;
 
-const resolvers = {
-    agast: async (root, { id }, source, fieldASTs) => {
-        return await findById(AgastModel, id, fieldASTs);
-    },
-
-    agasts: async (root, args, source, fieldASTs) => {
-        return await find(AgastModel, args, fieldASTs);
-    },
+export const rootQueryFields = {
+    agastById: AgastTC.getResolver('findById'),
+    agastMany: AgastTC.getResolver('findMany'),
+    agastCount: AgastTC.getResolver('count'),
+    agastPagination: AgastTC.getResolver('pagination'),
 };
 
-export default { typeDefs, resolvers, queries };
+export const rootMutationFields = {
+    agastCreate: AgastTC.getResolver('createOne'),
+    agastUpdateById: AgastTC.getResolver('updateById'),
+    agastUpdateOne: AgastTC.getResolver('updateOne'),
+    agastUpdateMany: AgastTC.getResolver('updateMany'),
+    agastRemoveById: AgastTC.getResolver('removeById'),
+    agastRemoveOne: AgastTC.getResolver('removeOne'),
+    agastRemoveMany: AgastTC.getResolver('removeMany'),
+};

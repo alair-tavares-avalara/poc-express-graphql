@@ -54,28 +54,13 @@ export const Company = {
     'subjectToSRF1234': Boolean,
     'federalTaxRegime': FederalTaxRegime,
     'pisSubjectTo': {
-        'type': String,
-        'enum': [
-            'TAXABLE',
-            'NOT TAXABLE',
-            'EXEMPT'
-        ]
+        'type': String
     },
     'cofinsSubjectTo': {
-        'type': String,
-        'enum': [
-            'TAXABLE',
-            'NOT TAXABLE',
-            'EXEMPT'
-        ]
+        'type': String
     },
     'csllSubjectTo': {
-        'type': String,
-        'enum': [
-            'TAXABLE',
-            'NOT TAXABLE',
-            'EXEMPT'
-        ]
+        'type': String
     },
     'receiptsAreFullNoCumulativePisCofins': Boolean,
     'inssWithholdSubjectTo': Boolean,
@@ -99,20 +84,10 @@ export const Company = {
             ]
         },
         'tpImpNFe': {
-            'type': String,
-            'enum': [
-                '0',
-                '1',
-                '2'
-            ]
+            'type': String
         },
         'tpImpNFCe': {
-            'type': String,
-            'enum': [
-                '0',
-                '4',
-                '5'
-            ]
+            'type': String
         }
     },
     'mailServer': {
@@ -2435,35 +2410,15 @@ export const Agast = {
     'hsCode': String,
     'codeType': {
         'type': String,
-        'enum': [
-            'NCM',
-            'NBS',
-            'LC116',
-            'SERVICE UNREGULATED'
-        ],
         'required': true
     },
     'accruablePISTaxation': {
-        'type': String,
-        'enum': [
-            'T',
-            'Z',
-            'E',
-            'H',
-            'N'
-        ]
+        'type': String
     },
     'pisExemptLegalReasonCode': String,
     'pisExemptLegalReason': String,
     'accruableCOFINSTaxation': {
-        'type': String,
-        'enum': [
-            'T',
-            'Z',
-            'E',
-            'H',
-            'N'
-        ]
+        'type': String
     },
     'cofinsExemptLegalReasonCode': String,
     'cofinsExemptLegalReason': String,

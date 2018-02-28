@@ -1,36 +1,30 @@
-import { merge } from 'lodash';
-import { makeExecutableSchema } from 'graphql-tools';
-import AgastSchema from './agast';
-import CompanySchema from './company';
+import { SchemaComposer } from 'graphql-compose';
 
-const RootQuery = `
-    type RootQuery {
-        ${AgastSchema.queries}
-        ${CompanySchema.queries}
-    }
-`;
+import { rootQueryFields as AgastRootQueryFields, rootMutationFields as AgastRootMutationFields } from './agast';
+import { rootQueryFields as CompanyRootQueryFields, rootMutationFields as CompanyRootMutationFields } from './company';
 
-const SchemaDefinition = `
-    schema {
-        query: RootQuery
-    }
-`;
+const GQC = new SchemaComposer();
+const ViewerTC = GQC.getOrCreateTC('Viewer');
 
-const typeDefs = [
-    SchemaDefinition,
-    RootQuery,
-    AgastSchema.typeDefs,
-    CompanySchema.typeDefs
-];
+GQC.rootQuery().addFields({
+    viewer: {
+        type: ViewerTC.getType(),
+        resolve: () => ({}),
+    },
+});
 
-const resolvers = {
-    RootQuery: {
-        ...AgastSchema.resolvers,
-        ...CompanySchema.resolvers
-    }
+const fields = {
+    ...AgastRootQueryFields,
+    ...CompanyRootQueryFields,
 };
 
-export default makeExecutableSchema({
-    typeDefs,
-    resolvers
-});
+ViewerTC.addFields(fields);
+
+const mutationFields = {
+    ...AgastRootMutationFields,
+    ...CompanyRootMutationFields,
+};
+
+GQC.rootMutation().addFields(mutationFields);
+
+export default GQC.buildSchema();
