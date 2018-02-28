@@ -21,11 +21,31 @@ before_install:
 before_script:
   - tar -xvzf ./database/avatax.tar.gz
   - npm install -g newman nyc
-  - docker-compose up -d
 
-script:
-  - docker exec -it pocexpressgraphql_db_1 mongorestore -d avatax /data/db/backup
-  - npm run test-api
+jobs:
+  include:
+    - stage: Install dependencies
+      script: 
+        - npm install
+
+    - stage: Build project
+      script:
+        - npm build
+
+    - stage: Run unit tests
+      script:
+        - echo "Run unit tests"
+
+    - stage: Up image docker
+      script:
+        - docker-compose up -d
+
+    - stage: Restore mongo data
+      script:
+        - docker exec -it pocexpressgraphql_db_1 mongorestore -d avatax /data/db/backup
+
+    - stage: Test API
+        - npm run test-api
 
 notifications:
   email:
